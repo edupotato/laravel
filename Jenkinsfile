@@ -9,24 +9,24 @@ node('php'){
     }
     
     stage('Build'){
-        sh 'composer install --prefer-dist --no-dev --ignore-platform-reqs'
+        sh 'composer install --no-scripts --prefer-dist --no-dev --ignore-platform-reqs'
     }
     
     stage('config') {
         parallel(
             'config cache': {
-                sh 'php artisan config:cache'
+                echo 'Tarefa Paralela 01'
             },
             'config route': {
-                sh 'php artisan'
+                echo 'Tarefa Paralela 02'
             }
         )
     }
     stage('Docker Build') {
-        sh 'docker build -t edubarros/api:$BUILD_NUMBER .'
+        sh 'docker build -t edubarros/laravel:$BUILD_NUMBER .'
     }
     
     stage('Docker Ship') {
-        sh 'docker push edubarros/api:$BUILD_NUMBER'
+        sh 'docker push edubarros/laravel:$BUILD_NUMBER'
     }
 }
